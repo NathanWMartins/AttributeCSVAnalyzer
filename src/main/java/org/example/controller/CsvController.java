@@ -13,39 +13,50 @@ import java.util.List;
 @RequestMapping("/api")
 public class CsvController {
 
-    // Injeta automaticamente o serviço responsável por ler e processar arquivos CSV
     @Autowired
     private CsvService csvService;
 
-    // Injeta automaticamente o serviço responsável por cálculos de correlação
     @Autowired
     private CorrelationService correlationService;
 
-    // Injeta automaticamente o serviço responsável por seleção de features
     @Autowired
     private FeatureSelectionService featureSelectionService;
 
     @GetMapping("/dados")
     public List<AthleteData> dados(@RequestParam String caminho) {
-        // Chama o serviço de CSV para ler e retornar os dados
         return csvService.getDados(caminho);
     }
 
     @GetMapping("/correlacao")
     public double[][] correlacao(@RequestParam String caminho) {
-        // Obtém os dados do CSV usando o serviço
         var dados = csvService.getDados(caminho);
-        // Calcula e retorna a matriz de correlação usando o serviço específico
         return correlationService.calcularCorrelacao(dados);
     }
 
     @GetMapping("/filtro")
     public List<String> filtro(
             @RequestParam String caminho,
-            @RequestParam(defaultValue = "10") double limiar) {
-        // Obtém os dados do CSV
+            @RequestParam(defaultValue = "0.5") double limiar) {
         var dados = csvService.getDados(caminho);
-        // Aplica o metodo de filtro para selecionar features com base no limiar
         return featureSelectionService.filtro(dados, limiar);
+    }
+
+    @GetMapping("/wrapper")
+    public List<String> wrapper(
+            @RequestParam String caminho,
+            @RequestParam(defaultValue = "3") int quantidade,
+            @RequestParam(defaultValue = "target") String target) {
+        var dados = csvService.getDados(caminho);
+        //return featureSelectionService.wrapperRFE(dados, target, quantidade);
+        return null;
+    }
+
+    @GetMapping("/embedded")
+    public List<String> embedded(
+            @RequestParam String caminho,
+            @RequestParam(defaultValue = "target") String target,
+            @RequestParam(defaultValue = "0.1") double alpha) {
+        var dados = csvService.getDados(caminho);
+        return featureSelectionService.embeddedLasso(dados, target, alpha);
     }
 }
