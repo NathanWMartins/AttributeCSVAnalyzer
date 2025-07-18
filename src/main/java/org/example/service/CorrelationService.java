@@ -5,6 +5,7 @@ import org.example.model.AthleteData;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 // Classe Service Spring, permite injeção em outros componentes
@@ -54,5 +55,11 @@ public class CorrelationService {
             e.printStackTrace();
             return null;
         }
+    }
+    public List<String> getNomesDosAtributos() {
+        return Arrays.stream(AthleteData.class.getDeclaredFields())
+                .filter(f -> f.getType() == double.class)
+                .map(Field::getName)
+                .toList();
     }
 }
