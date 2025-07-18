@@ -51,7 +51,6 @@ public class FeatureSelectionService {
         return null;
     }
 
-
     public List<String> embeddedLasso(List<AthleteData> dados, String targetNome, double alpha) {
         try {
             // Lista para armazenar os campos (atributos) numéricos do objeto
